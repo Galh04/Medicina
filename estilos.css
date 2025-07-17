@@ -35,3 +35,28 @@ h1 {
   color: white;
   border-color: #388e3c;
 }
+/* estilos.css (agregado para dividir por años) */
+
+.anio {
+  margin: 40px auto;
+  max-width: 1200px;
+  text-align: left;
+  padding: 10px;
+  border-top: 3px solid #007acc;
+}
+
+.anio h2 {
+  color: #007acc;
+  font-size: 22px;
+  margin-bottom: 10px;
+  border-bottom: 2px dashed #007acc;
+  padding-bottom: 5px;
+}
+
+.contenedor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+/* Mantener los estilos anteriores para .materia, body, etc. */
