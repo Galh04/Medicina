@@ -1,0 +1,1 @@
+// script.js cargado correctamente (rellenado previamente)
