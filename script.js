@@ -91,3 +91,101 @@ materias.forEach(m => {
     el.element.classList.remove("bloqueada");
   }
 });
+// script.js
+
+console.log("📘 script.js cargado correctamente");
+
+const materias = [
+  // (la lista de materias sigue igual, sin cambios)
+];
+
+const grid = document.getElementById("grid");
+const materiasMap = new Map();
+
+// Crear contenedores por año
+const anios = ["Primer año", "Segundo año", "Tercer año", "Cuarto año", "Quinto año", "Sexto año", "Optativas"];
+const secciones = {};
+
+anios.forEach(anio => {
+  const seccion = document.createElement("div");
+  seccion.className = "anio";
+  const titulo = document.createElement("h2");
+  titulo.textContent = anio;
+  const contenedor = document.createElement("div");
+  contenedor.className = "contenedor-grid";
+  seccion.appendChild(titulo);
+  seccion.appendChild(contenedor);
+  grid.appendChild(seccion);
+  secciones[anio] = contenedor;
+});
+
+// Función auxiliar para obtener año según ID
+function obtenerAnio(id) {
+  if (id >= 1 && id <= 10) return "Primer año";
+  if (id >= 11 && id <= 16) return "Segundo año";
+  if (id >= 17 && id <= 22) return "Tercer año";
+  if (id >= 23 && id <= 28) return "Cuarto año";
+  if (id >= 29 && id <= 35) return "Quinto año";
+  if (id >= 36 && id <= 42) return "Optativas";
+  return "Sexto año";
+}
+
+materias.forEach(m => {
+  const div = document.createElement("div");
+  div.className = "materia bloqueada";
+  div.innerHTML = `<h3>${m.nombre}</h3><p>ID: ${m.id}</p>`;
+  div.dataset.id = m.id;
+  div.addEventListener("click", () => toggleMateria(m.id));
+
+  const anio = obtenerAnio(m.id);
+  secciones[anio].appendChild(div);
+
+  materiasMap.set(m.id, { ...m, element: div, aprobada: false });
+});
+
+function toggleMateria(id) {
+  const materia = materiasMap.get(id);
+
+  if (materia.aprobada) {
+    materia.aprobada = false;
+    materia.element.classList.remove("aprobada");
+    materia.element.classList.add("bloqueada");
+    bloquearDependientes();
+  } else {
+    if (!isDesbloqueada(materia)) return;
+    materia.aprobada = true;
+    materia.element.classList.remove("bloqueada");
+    materia.element.classList.add("aprobada");
+    desbloquearDependientes();
+  }
+}
+
+function isDesbloqueada(materia) {
+  return materia.requisitos.every(req => materiasMap.get(req)?.aprobada);
+}
+
+function desbloquearDependientes() {
+  materias.forEach(m => {
+    if (!materiasMap.get(m.id).aprobada && isDesbloqueada(m)) {
+      materiasMap.get(m.id).element.classList.remove("bloqueada");
+    }
+  });
+}
+
+function bloquearDependientes() {
+  materias.forEach(m => {
+    if (!isDesbloqueada(m)) {
+      const el = materiasMap.get(m.id);
+      el.aprobada = false;
+      el.element.classList.remove("aprobada");
+      el.element.classList.add("bloqueada");
+    }
+  });
+}
+
+materias.forEach(m => {
+  if (m.requisitos.length === 0) {
+    const el = materiasMap.get(m.id);
+    el.element.classList.remove("bloqueada");
+  }
+});
